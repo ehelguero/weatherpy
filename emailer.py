@@ -1,4 +1,5 @@
 import requests
+import smtplib
 
 def get_emails():
 
@@ -16,7 +17,7 @@ def get_emails():
 
         print(err)
 
-    return(emails)
+    return emails
 
 
 def get_schedule():
@@ -30,11 +31,26 @@ def get_schedule():
 
         print(err)
 
-    return(schedule)
+    return schedule
+
+
+def send_emails(emails, schedule, forecast):
+    email_from = 'xxx@gmail.com'
+    email_to = 'email@test.es'
+    # connect to the smtp server
+    server = smtplib.SMTP('smtp.gmail.com', '587')
+    # Start TLS encryption
+    server.starttls()
+
+    password = input('Whats your password')
+    server.login(email_from, password)
+
+    server.sendmail(email_from, email_to, 'Test Message')
+    server.quit()
 
 
 def get_weather_forecast():
-    api_key = 'ba8ef5ff2050ddec43f2f7a53d944c9b'
+    api_key = '--'
     url = 'http://api.openweathermap.org/data/2.5/weather?q=London&appid='
     url += api_key
     weather_request = requests.get(url)
@@ -50,7 +66,8 @@ def main():
     schedule = get_schedule()
     print(schedule)
 
-    print(get_weather_forecast())
+    forecast = get_weather_forecast()
 
+    send_emails(emails,schedule,forecast)
 
 main()
